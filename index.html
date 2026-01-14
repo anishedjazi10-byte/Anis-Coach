@@ -3,70 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ANIS | PRO AI COACH</title>
+    <title>ANIS | AI SYSTEM LOGIN</title>
     <style>
-        body { background: #020202; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: #080808; padding: 40px; border-radius: 25px; border: 1px solid #111; text-align: center; width: 380px; box-shadow: 0 20px 50px #000; }
-        h1 { font-size: 3.5rem; letter-spacing: 10px; margin: 0; background: linear-gradient(#fff, #444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
-        .tag { color: #00ff88; font-size: 0.6rem; letter-spacing: 3px; margin-bottom: 30px; text-transform: uppercase; opacity: 0.7; }
+        :root { --neon: #00ff88; --bg: #020202; }
+        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         
-        .db-box { background: #000; border: 1px dashed #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left; font-size: 0.8rem; }
-        .db-title { color: #555; font-weight: bold; margin-bottom: 5px; display: block; }
+        .card { 
+            background: rgba(8, 8, 8, 0.95); padding: 40px; border-radius: 20px; border: 1px solid #222; 
+            width: 400px; text-align: center; box-shadow: 0 0 50px #000;
+        }
+
+        .user-profile { background: #000; border: 1px solid var(--neon); padding: 10px; border-radius: 10px; margin-bottom: 20px; display: none; font-size: 0.8rem; color: var(--neon); }
+
+        h1 { font-size: 3rem; letter-spacing: 15px; margin: 0; color: #fff; text-shadow: 0 0 20px var(--neon); }
         
-        input { width: 100%; background: #050505; border: 1px solid #1a1a1a; padding: 12px; color: #00ff88; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 15px; background: transparent; border: 1px solid #00ff88; color: #00ff88; border-radius: 10px; cursor: pointer; font-weight: 900; transition: 0.4s; text-transform: uppercase; }
-        .btn:hover { background: #00ff88; color: #000; box-shadow: 0 0 30px rgba(0,255,136,0.3); }
-        
-        #history { color: #888; margin-top: 20px; font-size: 0.75rem; border-top: 1px solid #111; padding-top: 15px; }
+        .form-group { margin-top: 20px; text-align: left; }
+        label { font-size: 0.7rem; color: #555; text-transform: uppercase; margin-left: 5px; }
+
+        input { 
+            width: 100%; padding: 12px; background: #050505; border: 1px solid #222; 
+            color: var(--neon); border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; outline: none; 
+        }
+
+        .btn { 
+            width: 100%; padding: 15px; background: var(--neon); border: none; 
+            color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; 
+            text-transform: uppercase; letter-spacing: 2px; 
+        }
+
+        #aiStatus { font-size: 0.7rem; color: #444; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="card">
+        <div id="userBadge" class="user-profile"></div>
         <h1>ANIS</h1>
-        <div class="tag">SECURE AI COACHING SYSTEM</div>
-
-        <div class="db-box">
-            <span class="db-title">LAST SAVED LOG:</span>
-            <div id="savedData">No data in memory.</div>
+        
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Identify Yourself (Email)</label>
+                <input type="email" id="userEmail" placeholder="name@example.com">
+                <label>Username</label>
+                <input type="text" id="userName" placeholder="Your Name">
+            </div>
+            <button class="btn" onclick="registerUser()">Access System</button>
         </div>
 
-        <input type="text" id="userInput" placeholder="Log meal or swim laps...">
-        <button class="btn" onclick="saveAndAnalyze()">SAVE & ANALYZE</button>
+        <div id="mainSystem" style="display:none;">
+            <div class="form-group">
+                <label>Daily Performance Log</label>
+                <input type="text" id="activityInput" placeholder="Ex: 50m Butterfly - 28s">
+            </div>
+            <button class="btn" onclick="saveActivity()">Update Core</button>
+            <button style="margin-top:10px; background:transparent; color:#f44; border:1px solid #f44" class="btn" onclick="logout()">Logout</button>
+        </div>
 
-        <div id="history">Waiting for input...</div>
+        <div id="aiStatus">SYSTEM STATUS: READY</div>
     </div>
 
     <script>
-        // دالة لتحميل البيانات المحفوظة بمجرد فتح الموقع
+        // التحقق من وجود مستخدم مسجل عند فتح الموقع
         window.onload = function() {
-            const lastLog = localStorage.getItem('anisLastLog');
-            if (lastLog) {
-                document.getElementById('savedData').innerText = lastLog;
+            const savedEmail = localStorage.getItem('anisUserEmail');
+            const savedName = localStorage.getItem('anisUserName');
+            if (savedEmail) {
+                showDashboard(savedName, savedEmail);
             }
         };
 
-        function saveAndAnalyze() {
-            const input = document.getElementById('userInput').value;
-            const savedBox = document.getElementById('savedData');
-            const history = document.getElementById('history');
+        function registerUser() {
+            const email = document.getElementById('userEmail').value;
+            const name = document.getElementById('userName').value;
 
-            if (!input) {
-                alert("Please enter data first, Sir.");
+            if (!email || !name) {
+                alert("Sir, identification requires both Email and Name.");
                 return;
             }
 
-            // حفظ البيانات في ذاكرة المتصفح
-            const time = new Date().toLocaleString();
-            const logEntry = `${input} (Saved: ${time})`;
-            localStorage.setItem('anisLastLog', logEntry);
-
-            // تحديث الواجهة
-            savedBox.innerText = logEntry;
-            history.innerHTML = ">> <b>AI COACH:</b> Data encrypted and saved. Analysis: Your current routine is optimizing your 50m freestyle speed.";
+            // حفظ بيانات المستخدم
+            localStorage.setItem('anisUserEmail', email);
+            localStorage.setItem('anisUserName', name);
             
-            // مسح الخانة بعد الحفظ
-            document.getElementById('userInput').value = "";
+            showDashboard(name, email);
+        }
+
+        function showDashboard(name, email) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('mainSystem').style.display = 'block';
+            
+            const badge = document.getElementById('userBadge');
+            badge.style.display = 'block';
+            badge.innerText = `ACTIVE USER: ${name.toUpperCase()} [${email}]`;
+            document.getElementById('aiStatus').innerText = "SYSTEM STATUS: LOGGED IN";
+        }
+
+        function saveActivity() {
+            const act = document.getElementById('activityInput').value;
+            if(act) {
+                localStorage.setItem('lastActivity', act);
+                document.getElementById('aiStatus').innerText = "CORE UPDATED: " + act;
+                document.getElementById('activityInput').value = "";
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
         }
     </script>
 </body>
