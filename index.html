@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ANIS | AI COACH SYSTEM</title>
+    <style>
+        body { background: #020202; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #080808; padding: 50px; border-radius: 30px; border: 1px solid #111; text-align: center; width: 350px; border-top: 3px solid #00ff88; }
+        h1 { font-size: 3.5rem; letter-spacing: 10px; margin: 0; font-weight: 900; }
+        .tag { color: #444; font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 30px; text-transform: uppercase; }
+        .btn { width: 100%; padding: 15px; background: transparent; border: 1px solid #00ff88; color: #00ff88; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.4s; }
+        .btn:hover { background: #00ff88; color: #000; box-shadow: 0 0 20px #00ff88; }
+        #res { margin-top: 20px; color: #666; font-size: 0.8rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>ANIS</h1>
+        <div class="tag">AI COACH | PRO SWIMMER</div>
+        <button class="btn" onclick="run()">EXECUTE SYSTEM</button>
+        <div id="res">Awaiting orders, Sir...</div>
+    </div>
+    <script>
+        function run() { document.getElementById('res').innerText = "SYSTEM ACTIVE: Optimal performance detected for Anis."; }
+    </script>
+</body>
+</html>
